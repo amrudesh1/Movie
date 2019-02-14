@@ -1,6 +1,7 @@
 package com.application.amrudesh.moviedb_udacity.Activities;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RadioButton;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,6 +33,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -39,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
     private List<Movie> movieList;
     private RequestQueue requestQueue;
     private MaterialSearchView searchView;
+    private AlertDialog.Builder alertDialogBuilder;
+    private AlertDialog alertDialog;
     String search;
 
 
@@ -48,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        AlertDialog alertDialog;
         searchView = (MaterialSearchView) findViewById(R.id.sv);
         searchView.setOnSearchViewListener(MainActivity.this);
         requestQueue = Volley.newRequestQueue(this);
@@ -112,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                Log.i("Movie",error.toString());
+
             }
         });
         requestQueue.add(jsonObjectRequest);
@@ -154,4 +167,61 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
     public void onQueryTextChange(String s) {
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_filter)
+        {
+            showSortDialog();
+            return  true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    public void showSortDialog()
+    {
+        alertDialogBuilder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.sortdialog,null);
+        final RadioButton rd1,rd2;
+        rd1=(RadioButton) view.findViewById(R.id.nameSort_Btn);
+        rd2=(RadioButton) view.findViewById(R.id.release_sort_btn);
+        Button btn = (Button) view.findViewById(R.id.sort_btn);
+        alertDialogBuilder.setView(view);
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+        final Movie movie = new Movie();
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (rd2.isChecked())
+                {
+                    Collections.sort(movieList, new Comparator<Movie>() {
+                        @Override
+                        public int compare(Movie o1, Movie o2) {
+                            return o1.getReleaseDate().compareTo(o2.getReleaseDate());
+                        }
+                    });
+                    movieAdapter.notifyDataSetChanged();
+                    alertDialog.dismiss();
+
+                }
+                else if(rd1.isChecked())
+                {
+                    Collections.sort(movieList, new Comparator<Movie>() {
+                        @Override
+                        public int compare(Movie o1, Movie o2) {
+                            return o1.getTitle().compareTo(o2.getTitle());
+                        }
+                    });
+                    movieAdapter.notifyDataSetChanged();
+                    alertDialog.dismiss();
+                }
+
+            }
+        });
+
+
+    }
+
 }
