@@ -13,7 +13,7 @@ public class Movie implements Serializable {
     private String image;
     private String plot;
     private String rating;
-    public String releaseDate;
+    private String releaseDate;
 
     public Movie() {
     }
