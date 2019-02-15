@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -16,6 +18,8 @@ import com.android.volley.toolbox.Volley;
 import com.application.amrudesh.moviedb_udacity.Model.Movie;
 import com.application.amrudesh.moviedb_udacity.R;
 import com.application.amrudesh.moviedb_udacity.Util.Constants;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +34,7 @@ public class Details extends AppCompatActivity implements Serializable {
     ImageView imageView;
     private RequestQueue queue;
     private String movieId;
+    LikeButton likeButton;
     String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,19 @@ public class Details extends AppCompatActivity implements Serializable {
         setUI();
         getDetails(url);
 
+        likeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                Toast.makeText(Details.this, "Added To Favorites", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                Toast.makeText(Details.this, "Removed From Favorites", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
 
     }
 
@@ -50,6 +68,8 @@ public class Details extends AppCompatActivity implements Serializable {
         storyPlot=(TextView)findViewById(R.id.story_line);
         ratingBar =(RatingBar) findViewById(R.id.rating);
         imageView= (ImageView)findViewById(R.id.mov_img);
+        likeButton =(LikeButton) findViewById(R.id.heart_button);
+
 
     }
 
@@ -82,4 +102,6 @@ public class Details extends AppCompatActivity implements Serializable {
         });
         queue.add(jsonObjectRequest);
 
-    }}
+    }
+
+}

@@ -48,7 +48,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <RatingBar
                 android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
                 android:paddingLeft="15dp"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:id="@+id/story"
             android:layout_height="wrap_content"
             android:text="Story Line"
@@ -73,12 +73,25 @@
             android:fontFamily="sans-serif-black"
             android:paddingLeft="15dp"
             android:paddingTop="15dp"/>
+            <com.like.LikeButton
+                android:id="@+id/heart_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="25dp"
+                android:layout_alignBaseline="@id/story"
+                app:liked="false"
+                app:icon_size="10dp"
+                app:anim_scale_factor="4"
+                app:icon_type="heart" />
 
             <RelativeLayout
-                android:paddingTop="10dp"
+                android:paddingTop="12dp"
                 android:layout_below="@+id/story"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
 
              <ScrollView
                  android:layout_width="match_parent"
