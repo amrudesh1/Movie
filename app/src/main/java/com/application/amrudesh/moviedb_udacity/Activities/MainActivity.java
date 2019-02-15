@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         movieList = new ArrayList<>();
         //getMovies(search);
         movieList = getMovies(search);
-        setUpViewModel();
         movieAdapter = new MovieAdapter(this, movieList);
         recyclerView.setAdapter(movieAdapter);
 
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
 
     public List<Movie> getMovies(String searchTerm) {
 
-
+        movieList.clear();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
                 Constants.COMPLETE_URL + searchTerm, null, new Response.Listener<JSONObject>() {
             @Override
@@ -179,6 +178,11 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         if (id == R.id.action_filter) {
             showSortDialog();
             return true;
+
+        }
+        else if (id == R.id.fav)
+        {
+            setUpViewModel();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -232,7 +236,8 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         movieViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
-
+            movieList.clear();
+            movieAdapter.setMovies(movies);
 
             }
         });

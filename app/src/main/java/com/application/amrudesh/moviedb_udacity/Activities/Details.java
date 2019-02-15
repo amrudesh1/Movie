@@ -36,7 +36,7 @@ public class Details extends AppCompatActivity implements Serializable {
     RatingBar ratingBar;
     ImageView imageView;
     private RequestQueue queue;
-    private String movieId,movieName,plot,rating,relase;
+    private String movieId,movieName,plot,rating,release;
     LikeButton likeButton;
     private MovieViewModel movieViewModel;
     String url;
@@ -56,7 +56,7 @@ public class Details extends AppCompatActivity implements Serializable {
         likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                addToDatabase(movieId,movieName,plot,rating,relase);
+                addToDatabase(movieId,movieName,plot,rating,release);
                 Toast.makeText(Details.this, "Added To Favorites", Toast.LENGTH_SHORT).show();
 
             }
@@ -89,13 +89,18 @@ public class Details extends AppCompatActivity implements Serializable {
             public void onResponse(JSONObject response) {
                 Log.i("Movie",response.toString());
                 try {
-                    mvName.setText(movieName=response.getString("original_title"));
-                    storyPlot.setText(plot=response.getString("overview"));
+                    mvName.setText(response.getString("original_title"));
+                    storyPlot.setText(response.getString("overview"));
                     Picasso.get()
                             .load(Constants.image_url+response.getString("poster_path"))
                     .into(imageView);
-                    ratingBar.setRating(Float.valueOf(rating=response.getString("vote_average")));
-                    relase =response.getString("release_date");
+                    ratingBar.setRating(Float.valueOf(response.getString("vote_average")));
+                    movieName =response.getString("original_title");
+                    plot =response.getString("overview");
+                    release =response.getString("release_date");
+                    rating=response.getString("vote_average");
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -115,9 +120,10 @@ public class Details extends AppCompatActivity implements Serializable {
 
     public void addToDatabase(String mvID,String mvNm,String plt,String rt,String rel)
     {
+        Log.i("Movie","mv" + movieName);
+        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         Movie movie = new Movie(mvID,mvNm,plt,rt,rel);
         movieViewModel.insert(movie);
-
     }
 
 }

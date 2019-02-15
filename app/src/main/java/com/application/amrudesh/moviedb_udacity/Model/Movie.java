@@ -31,6 +31,7 @@ public class Movie implements Serializable {
     private String rating;
     private String releaseDate;
 
+    @Ignore
     public Movie() {
     }
 
