@@ -1,6 +1,8 @@
 package com.application.amrudesh.moviedb_udacity.Activities;
 
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.application.amrudesh.moviedb_udacity.Data.MovieViewModel;
 import com.application.amrudesh.moviedb_udacity.Model.Movie;
 import com.application.amrudesh.moviedb_udacity.R;
 import com.application.amrudesh.moviedb_udacity.Util.Constants;
@@ -33,8 +36,9 @@ public class Details extends AppCompatActivity implements Serializable {
     RatingBar ratingBar;
     ImageView imageView;
     private RequestQueue queue;
-    private String movieId;
+    private String movieId,movieName,plot,rating,relase;
     LikeButton likeButton;
+    private MovieViewModel movieViewModel;
     String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +47,18 @@ public class Details extends AppCompatActivity implements Serializable {
         movie =(Movie) getIntent().getSerializableExtra("movie");
         movieId = movie.getMovieID();
         url = Constants.search_base_id_left+ movieId + Constants.getSearch_base_id_right;
+
         queue =Volley.newRequestQueue(this);
         setUI();
         getDetails(url);
 
+
         likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
+                addToDatabase(movieId,movieName,plot,rating,relase);
                 Toast.makeText(Details.this, "Added To Favorites", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -81,12 +89,13 @@ public class Details extends AppCompatActivity implements Serializable {
             public void onResponse(JSONObject response) {
                 Log.i("Movie",response.toString());
                 try {
-                    mvName.setText(response.getString("original_title"));
-                    storyPlot.setText(response.getString("overview"));
+                    mvName.setText(movieName=response.getString("original_title"));
+                    storyPlot.setText(plot=response.getString("overview"));
                     Picasso.get()
                             .load(Constants.image_url+response.getString("poster_path"))
                     .into(imageView);
-                    ratingBar.setRating(Float.valueOf(response.getString("vote_average")));
+                    ratingBar.setRating(Float.valueOf(rating=response.getString("vote_average")));
+                    relase =response.getString("release_date");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -101,6 +110,13 @@ public class Details extends AppCompatActivity implements Serializable {
             }
         });
         queue.add(jsonObjectRequest);
+
+    }
+
+    public void addToDatabase(String mvID,String mvNm,String plt,String rt,String rel)
+    {
+        Movie movie = new Movie(mvID,mvNm,plt,rt,rel);
+        movieViewModel.insert(movie);
 
     }
 

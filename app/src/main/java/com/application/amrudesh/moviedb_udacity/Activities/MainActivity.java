@@ -1,6 +1,9 @@
 package com.application.amrudesh.moviedb_udacity.Activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.amrudesh.moviedb_udacity.Data.MovieAdapter;
+import com.application.amrudesh.moviedb_udacity.Data.MovieViewModel;
 import com.application.amrudesh.moviedb_udacity.Model.Movie;
 import com.application.amrudesh.moviedb_udacity.R;
 import com.application.amrudesh.moviedb_udacity.Util.Constants;
@@ -40,7 +44,6 @@ import java.util.Comparator;
 import java.util.List;
 
 
-
 public class MainActivity extends AppCompatActivity implements OnSearchViewListener {
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
     private MaterialSearchView searchView;
     private AlertDialog.Builder alertDialogBuilder;
     private AlertDialog alertDialog;
+    private MovieViewModel movieViewModel;
     String search;
 
 
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         AlertDialog alertDialog;
         searchView = (MaterialSearchView) findViewById(R.id.sv);
         searchView.setOnSearchViewListener(MainActivity.this);
+
         requestQueue = Volley.newRequestQueue(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         movieList = new ArrayList<>();
         //getMovies(search);
         movieList = getMovies(search);
+        setUpViewModel();
         movieAdapter = new MovieAdapter(this, movieList);
         recyclerView.setAdapter(movieAdapter);
 
@@ -104,12 +110,11 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
                         //TODO:Remove The LOG from Program
 
                         Log.i("Movie", movie.getTitle());
-                        Log.i("Movie", "Year Released:"+ movie.getReleaseDate());
+                        Log.i("Movie", "Year Released:" + movie.getReleaseDate());
                         Log.i("Movie", movie.getImage());
                         Log.i("Movie", movie.getPlot());
                         Log.i("Movie", movie.getRating());
-                        Log.i("Movie",movie.getMovieID());
-
+                        Log.i("Movie", movie.getMovieID());
 
 
                     }
@@ -123,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Log.i("Movie",error.toString());
+                Log.i("Movie", error.toString());
 
             }
         });
@@ -167,23 +172,23 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
     public void onQueryTextChange(String s) {
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_filter)
-        {
+        if (id == R.id.action_filter) {
             showSortDialog();
-            return  true;
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    public void showSortDialog()
-    {
+
+    public void showSortDialog() {
         alertDialogBuilder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.sortdialog,null);
-        final RadioButton rd1,rd2;
-        rd1=(RadioButton) view.findViewById(R.id.nameSort_Btn);
-        rd2=(RadioButton) view.findViewById(R.id.release_sort_btn);
+        View view = getLayoutInflater().inflate(R.layout.sortdialog, null);
+        final RadioButton rd1, rd2;
+        rd1 = (RadioButton) view.findViewById(R.id.nameSort_Btn);
+        rd2 = (RadioButton) view.findViewById(R.id.release_sort_btn);
         Button btn = (Button) view.findViewById(R.id.sort_btn);
         alertDialogBuilder.setView(view);
         alertDialog = alertDialogBuilder.create();
@@ -194,8 +199,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
             @Override
             public void onClick(View v) {
 
-                if (rd2.isChecked())
-                {
+                if (rd2.isChecked()) {
                     Collections.sort(movieList, new Comparator<Movie>() {
                         @Override
                         public int compare(Movie o1, Movie o2) {
@@ -205,9 +209,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
                     movieAdapter.notifyDataSetChanged();
                     alertDialog.dismiss();
 
-                }
-                else if(rd1.isChecked())
-                {
+                } else if (rd1.isChecked()) {
                     Collections.sort(movieList, new Comparator<Movie>() {
                         @Override
                         public int compare(Movie o1, Movie o2) {
@@ -222,6 +224,18 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         });
 
 
+    }
+
+    public void setUpViewModel() {
+
+        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        movieViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+
+
+            }
+        });
     }
 
 }

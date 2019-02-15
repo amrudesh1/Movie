@@ -56,7 +56,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public int getItemCount() {
         return movieList.size();
     }
-
+    public void setMovies(List<Movie>movies)
+    {
+        this.movieList = movies;
+        notifyDataSetChanged();
+    }
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
         ImageView poster;
@@ -82,6 +86,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 }
             });
         }
+
 
         @Override
         public void onClick(View v) {
