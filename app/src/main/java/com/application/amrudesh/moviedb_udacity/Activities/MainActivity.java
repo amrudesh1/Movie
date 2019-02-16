@@ -3,6 +3,7 @@ package com.application.amrudesh.moviedb_udacity.Activities;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         requestQueue = Volley.newRequestQueue(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,1));
 
         Prefs prefs = new Prefs(MainActivity.this);
         String search = prefs.getSearch();
@@ -181,15 +182,18 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
     {
         alertDialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.sortdialog,null);
-        final RadioButton rd1,rd2;
+        final RadioButton rd1,rd2,rd3,rd4;
         rd1=(RadioButton) view.findViewById(R.id.nameSort_Btn);
         rd2=(RadioButton) view.findViewById(R.id.release_sort_btn);
+        rd3=(RadioButton) view.findViewById(R.id.popularBtn);
+        rd4=(RadioButton) view.findViewById(R.id.topRatedBtn);
         Button btn = (Button) view.findViewById(R.id.sort_btn);
         alertDialogBuilder.setView(view);
         alertDialog = alertDialogBuilder.create();
         alertDialog.show();
         final Movie movie = new Movie();
 
+        //Better to Use Switch case rather than using if else condition
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
                     movieAdapter.notifyDataSetChanged();
                     alertDialog.dismiss();
 
+
                 }
                 else if(rd1.isChecked())
                 {
@@ -217,6 +222,17 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
                     movieAdapter.notifyDataSetChanged();
                     alertDialog.dismiss();
                 }
+                else if (rd3.isChecked())
+                {
+                    movieList = showPopularMovies();
+                    alertDialog.dismiss();
+                }
+                else if (rd4.isChecked())
+                {
+                    movieList =showTopRatedMovies();
+                    alertDialog.dismiss();
+                }
+
 
             }
         });
@@ -224,4 +240,109 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
 
     }
 
+
+    private List<Movie> showPopularMovies() {
+        movieList.clear();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                Constants.popular_url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONArray movieArray = response.getJSONArray("results");
+                    for (int i = 0; i < movieArray.length(); i++) {
+                        JSONObject movieObj = movieArray.getJSONObject(i);
+                        Movie movie = new Movie();
+                        movie.setTitle(movieObj.getString("title"));
+                        movie.setReleaseDate(movieObj.getString("release_date"));
+                        movie.setImage(movieObj.getString("poster_path"));
+                        movie.setPlot(movieObj.getString("overview"));
+                        movie.setRating(movieObj.getString("vote_average"));
+                        movie.setMovieID(movieObj.getString("id"));
+
+
+                        movieList.add(movie);
+                        //TODO:Remove The LOG from Program
+
+                        Log.i("Movie", movie.getTitle());
+                        Log.i("Movie", "Year Released:"+ movie.getReleaseDate());
+                        Log.i("Movie", movie.getImage());
+                        Log.i("Movie", movie.getPlot());
+                        Log.i("Movie", movie.getRating());
+                        Log.i("Movie",movie.getMovieID());
+
+
+
+                    }
+                    movieAdapter.notifyDataSetChanged();// This is very Important
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Log.i("Movie",error.toString());
+
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+        return movieList;
+    }
+
+    private List<Movie>showTopRatedMovies() {
+        movieList.clear();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                Constants.top_rated_url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONArray movieArray = response.getJSONArray("results");
+                    for (int i = 0; i < movieArray.length(); i++) {
+                        JSONObject movieObj = movieArray.getJSONObject(i);
+                        Movie movie = new Movie();
+                        movie.setTitle(movieObj.getString("title"));
+                        movie.setReleaseDate(movieObj.getString("release_date"));
+                        movie.setImage(movieObj.getString("poster_path"));
+                        movie.setPlot(movieObj.getString("overview"));
+                        movie.setRating(movieObj.getString("vote_average"));
+                        movie.setMovieID(movieObj.getString("id"));
+
+
+                        movieList.add(movie);
+                        //TODO:Remove The LOG from Program
+
+                        Log.i("Movie", movie.getTitle());
+                        Log.i("Movie", "Year Released:"+ movie.getReleaseDate());
+                        Log.i("Movie", movie.getImage());
+                        Log.i("Movie", movie.getPlot());
+                        Log.i("Movie", movie.getRating());
+                        Log.i("Movie",movie.getMovieID());
+
+
+
+                    }
+                    movieAdapter.notifyDataSetChanged();// This is very Important
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Log.i("Movie",error.toString());
+
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+        return movieList;
+    }
+
+
 }
+

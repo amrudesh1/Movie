@@ -25,7 +25,7 @@ import java.io.Serializable;
 
 public class Details extends AppCompatActivity implements Serializable {
     private Movie movie;
-    TextView mvName,storyPlot;
+    TextView mvName,storyPlot,ratingtxt,releaseDate;
     RatingBar ratingBar;
     ImageView imageView;
     private RequestQueue queue;
@@ -50,6 +50,8 @@ public class Details extends AppCompatActivity implements Serializable {
         storyPlot=(TextView)findViewById(R.id.story_line);
         ratingBar =(RatingBar) findViewById(R.id.rating);
         imageView= (ImageView)findViewById(R.id.mov_img);
+        ratingtxt =(TextView)findViewById(R.id.ratingtxt);
+        releaseDate =(TextView) findViewById(R.id.releasedDate);
 
     }
 
@@ -61,6 +63,8 @@ public class Details extends AppCompatActivity implements Serializable {
             public void onResponse(JSONObject response) {
                 Log.i("Movie",response.toString());
                 try {
+                    releaseDate.setText("Released Date:\t" + response.getString("release_date"));
+                    ratingtxt.setText("Average Rating:\t" + response.getString("vote_average"));
                     mvName.setText(response.getString("original_title"));
                     storyPlot.setText(response.getString("overview"));
                     Picasso.get()
