@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
                         movie.setPlot(movieObj.getString("overview"));
                         movie.setRating(movieObj.getString("vote_average"));
                         movie.setMovieID(movieObj.getString("id"));
+                        movie.setFavBtn(false);
 
 
                         movieList.add(movie);
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
 
 
                     }
-                    movieAdapter.notifyDataSetChanged();// This is very Important
+                            movieAdapter.notifyDataSetChanged(); // This is very Important
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -151,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
 
     @Override
     public void onSearchViewClosed() {
+        movieAdapter.notifyDataSetChanged();
 
     }
 
@@ -163,12 +165,15 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
             getMovies(s);
 
 
+
+
         }
         return true;
     }
 
     @Override
     public void onQueryTextChange(String s) {
+        movieAdapter.notifyDataSetChanged();
 
     }
 

@@ -24,17 +24,22 @@ import com.application.amrudesh.moviedb_udacity.Util.Constants;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.Serializable;
 
 
 
 public class Details extends AppCompatActivity implements Serializable {
-    private Movie movie;
+    private Movie movie,mvData;
+
     TextView mvName,storyPlot;
     RatingBar ratingBar;
     ImageView imageView;
+    String videos;
     private RequestQueue queue;
     private String movieId,movieName,plot,rating,release;
     LikeButton likeButton;
@@ -44,25 +49,31 @@ public class Details extends AppCompatActivity implements Serializable {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+        mvData = new Movie();
         movie =(Movie) getIntent().getSerializableExtra("movie");
         movieId = movie.getMovieID();
         url = Constants.search_base_id_left+ movieId + Constants.getSearch_base_id_right;
-
+        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         queue =Volley.newRequestQueue(this);
         setUI();
         getDetails(url);
+        setBtnStatus();
+        Log.i("Movie",movie.getFavBtn().toString());
 
 
         likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                addToDatabase(movieId,movieName,plot,rating,release);
+                mvData.setFavBtn(true);
+                addToDatabase(movieId,movieName,plot,rating,release,true);
                 Toast.makeText(Details.this, "Added To Favorites", Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
+                deleteFromDatabase();
+                mvData.setFavBtn(false);
                 Toast.makeText(Details.this, "Removed From Favorites", Toast.LENGTH_SHORT).show();
 
             }
@@ -87,25 +98,37 @@ public class Details extends AppCompatActivity implements Serializable {
                 null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.i("Movie",response.toString());
                 try {
+
                     mvName.setText(response.getString("original_title"));
                     storyPlot.setText(response.getString("overview"));
                     Picasso.get()
                             .load(Constants.image_url+response.getString("poster_path"))
                     .into(imageView);
                     ratingBar.setRating(Float.valueOf(response.getString("vote_average")));
+                    videos=response.getString("videos");
+                    JSONObject jsonObject = new JSONObject(videos);
+                    String videoLnk = jsonObject.getString("results");
+                    JSONArray jsonArray = new JSONArray(videoLnk);
+                    for (int i=0;i < jsonArray.length();i++)
+                    {
+                        JSONObject parObj = jsonArray.getJSONObject(i);
+                        Log.i("Video",parObj.getString("key"));
+
+                    }
+                    
+                    //Values for Fav
                     movieName =response.getString("original_title");
                     plot =response.getString("overview");
                     release =response.getString("release_date");
                     rating=response.getString("vote_average");
 
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                Log.i("Movie",response.toString());
+                //Log.i("Movie",response.toString());
+
 
             }
         }, new Response.ErrorListener() {
@@ -118,12 +141,28 @@ public class Details extends AppCompatActivity implements Serializable {
 
     }
 
-    public void addToDatabase(String mvID,String mvNm,String plt,String rt,String rel)
+
+
+    public void addToDatabase(String mvID,String mvNm,String plt,String rt,String rel,boolean btn)
     {
-        Log.i("Movie","mv" + movieName);
-        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        Movie movie = new Movie(mvID,mvNm,plt,rt,rel);
+
+        Movie movie = new Movie(mvID,mvNm,plt,rt,rel,btn);
         movieViewModel.insert(movie);
     }
+    public void deleteFromDatabase()
+    {
 
+        movieViewModel.delete(movie);
+    }
+    public void setBtnStatus()
+    {
+        if (movie.getFavBtn())
+        {
+            likeButton.setLiked(true);
+        }
+        else
+        {
+            likeButton.setLiked(false);
+        }
+    }
 }
