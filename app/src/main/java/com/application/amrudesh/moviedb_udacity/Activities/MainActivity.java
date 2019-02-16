@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
 
 
                         movieList.add(movie);
+
                         //TODO:Remove The LOG from Program
 
                         Log.i("Movie", movie.getTitle());
@@ -163,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
             prefs.setSearch(s);
             movieList.clear();
             getMovies(s);
+            movieAdapter.notifyDataSetChanged();
+
 
 
 
@@ -173,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
 
     @Override
     public void onQueryTextChange(String s) {
-        movieAdapter.notifyDataSetChanged();
+
 
     }
 

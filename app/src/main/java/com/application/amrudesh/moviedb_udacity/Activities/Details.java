@@ -153,6 +153,7 @@ public class Details extends AppCompatActivity implements Serializable {
     {
 
         movieViewModel.delete(movie);
+        finish();
     }
     public void setBtnStatus()
     {
