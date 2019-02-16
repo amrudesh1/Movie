@@ -1,7 +1,5 @@
 package com.application.amrudesh.moviedb_udacity.Activities;
 
-
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -104,7 +102,7 @@ public class Details extends AppCompatActivity implements Serializable {
                     storyPlot.setText(response.getString("overview"));
                     Picasso.get()
                             .load(Constants.image_url+response.getString("poster_path"))
-                    .into(imageView);
+                            .into(imageView);
                     ratingBar.setRating(Float.valueOf(response.getString("vote_average")));
                     videos=response.getString("videos");
                     JSONObject jsonObject = new JSONObject(videos);
@@ -116,7 +114,7 @@ public class Details extends AppCompatActivity implements Serializable {
                         Log.i("Video",parObj.getString("key"));
 
                     }
-                    
+
                     //Values for Fav
                     movieName =response.getString("original_title");
                     plot =response.getString("overview");
@@ -134,7 +132,7 @@ public class Details extends AppCompatActivity implements Serializable {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-            Log.i("Movie",error.toString());
+                Log.i("Movie",error.toString());
             }
         });
         queue.add(jsonObjectRequest);
