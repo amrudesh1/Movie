@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -60,6 +60,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:paddingLeft="15dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ratingtxt"
+                android:text="Average Rating:"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/rating"
+                android:layout_alignBaseline="@id/rating"
+                android:layout_alignParentRight="true"/>
+            <TextView
+                android:id="@+id/releasedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rating"
+                android:text="Released date:"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/rating"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"
+                />
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,9 +115,7 @@
                 android:layout_height="match_parent">
 
 
-             <ScrollView
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent">
+
 
             <TextView
             android:layout_width="match_parent"
@@ -106,14 +126,22 @@
             android:textSize="18sp"
             android:paddingLeft="25dp"
             android:paddingTop="15dp" />
-             </ScrollView>
+
 
             </RelativeLayout>
 
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/youtube_recycler"
+        android:layout_width="match_parent"
+        android:layout_below="@id/cardView2"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="15dp"/>
 
 </RelativeLayout>
 
-</LinearLayout>
+
+</ScrollView>

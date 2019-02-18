@@ -18,7 +18,6 @@ public class Movie implements Serializable {
     @NonNull
     private String movieID;
     private String title;
-    @Ignore
     private String image;
     private String plot;
     private String rating;
@@ -27,11 +26,12 @@ public class Movie implements Serializable {
 
 
     private Boolean favBtn;
-    public Movie(@NonNull String movieID, String title, String plot, String rating, String releaseDate,boolean favBtn) {
+    public Movie(@NonNull String movieID, String title, String plot,String image, String rating, String releaseDate,boolean favBtn) {
         this.movieID = movieID;
         this.title = title;
         this.plot = plot;
         this.rating = rating;
+        this.image = image;
         this.releaseDate = releaseDate;
         this.favBtn = favBtn;
     }

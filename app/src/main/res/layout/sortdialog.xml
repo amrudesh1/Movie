@@ -54,6 +54,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="1dp" />
+
+                <RadioButton
+                    android:id="@+id/popularBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    />
+                <RadioButton
+                    android:id="@+id/topRatedBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+
+                    />
+
             </RadioGroup>
 
             <TextView
@@ -65,13 +80,31 @@
                 android:layout_marginTop="15dp"
                 android:text="Release Date"
                 android:textStyle="bold" />
+            <TextView
+                android:id="@+id/popular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/release_sort"
+                android:layout_marginLeft="55dp"
+                android:layout_marginTop="15dp"
+                android:text="Popular Movies"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/topBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/popular"
+                android:layout_marginLeft="55dp"
+                android:layout_marginTop="15dp"
+                android:text="Top Rated Movies"
+                android:textStyle="bold" />
 
 
             <Button
                 android:id="@+id/sort_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/release_sort"
+                android:layout_below="@id/topBtn"
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@id/release_sort"
                 android:background="@drawable/msv_filter_background"
