@@ -113,10 +113,6 @@
                 android:layout_below="@+id/story"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-
-
-
             <TextView
             android:layout_width="match_parent"
             android:id="@+id/story_line"
@@ -126,7 +122,15 @@
             android:textSize="18sp"
             android:paddingLeft="25dp"
             android:paddingTop="15dp" />
-
+                <Button
+                    android:id="@+id/review_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@id/story_line"
+                    android:background="@drawable/msv_filter_background"
+                    android:text="Read Reviews"
+                    android:textAlignment="center" />
 
             </RelativeLayout>
 
