@@ -39,7 +39,7 @@ import java.util.List;
 
 public class Details extends AppCompatActivity implements Serializable {
     private Movie movie,mvData;
-    Youtube youtube = new Youtube();
+
     TextView mvName,storyPlot,ratingtxt,releaseDate;
     private RecyclerView recyclerView;
     private YoutubeAdapter youtubeAdapter;
@@ -103,7 +103,7 @@ public class Details extends AppCompatActivity implements Serializable {
         recyclerView = (RecyclerView) findViewById(R.id.youtube_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(youtubeAdapter);
-        youtubeAdapter.notifyDataSetChanged();
+
 
     }
 
@@ -137,6 +137,7 @@ public class Details extends AppCompatActivity implements Serializable {
                     JSONArray jsonArray = new JSONArray(videoLnk);
                     for (int i=0; i < jsonArray.length();i++)
                     {
+                        Youtube youtube = new Youtube();
                         JSONObject parObj = jsonArray.getJSONObject(i);
                         youtube.setLinks(parObj.getString("key"));
                         youtube.setNames(parObj.getString("name"));
@@ -145,8 +146,7 @@ public class Details extends AppCompatActivity implements Serializable {
 
                     }
 
-                    recyclerView.setAdapter(new YoutubeAdapter(getApplicationContext(),youtubeList));
-
+                    youtubeAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
                     e.printStackTrace();

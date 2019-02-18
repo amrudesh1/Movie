@@ -1,7 +1,9 @@
 package com.application.amrudesh.moviedb_udacity.Data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -51,19 +53,30 @@ public class YoutubeAdapter extends RecyclerView.Adapter<YoutubeAdapter.ViewHold
     public int getItemCount() {
        return youtubeList.size();
     }
-    public class ViewHolder extends RecyclerView.ViewHolder
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         TextView names;
         ImageView imageView;
-        public ViewHolder(Context ctx,View itemView) {
+        public ViewHolder(final Context ctx,View itemView) {
             super(itemView);
             context = ctx;
             names = (TextView) itemView.findViewById(R.id.trailerName);
             imageView=(ImageView) itemView.findViewById(R.id.youtube_image);
 
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    String videoID = youtubeList.get(pos).getLinks();
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoID));
+                    ctx.startActivity(intent);
+                }
+            });
 
+        }
 
-
+        @Override
+        public void onClick(View v) {
 
         }
     }
