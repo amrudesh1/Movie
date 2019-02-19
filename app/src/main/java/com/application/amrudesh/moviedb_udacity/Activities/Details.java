@@ -26,6 +26,7 @@ import com.application.amrudesh.moviedb_udacity.Model.Movie;
 import com.application.amrudesh.moviedb_udacity.Model.Youtube;
 import com.application.amrudesh.moviedb_udacity.R;
 import com.application.amrudesh.moviedb_udacity.Util.Constants;
+import com.application.amrudesh.moviedb_udacity.Util.Prefs;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
@@ -41,7 +42,7 @@ import java.util.List;
 
 public class Details extends AppCompatActivity implements Serializable {
     private Movie movie,mvData;
-
+    MainActivity mainActivity;
     TextView mvName,storyPlot,ratingtxt,releaseDate;
     private RecyclerView recyclerView;
     private YoutubeAdapter youtubeAdapter;
