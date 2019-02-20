@@ -4,12 +4,15 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,9 +59,9 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
     private MaterialSearchView searchView;
     private AlertDialog.Builder alertDialogBuilder;
     private AlertDialog alertDialog;
+    RadioButton rd1,rd2,rd3,rd4;
+    Boolean a,b,c,d;
     String search;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,24 +74,30 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         requestQueue = Volley.newRequestQueue(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,1));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+
 
         Prefs prefs = new Prefs(MainActivity.this);
-        String search = prefs.getSearch();
+         search = prefs.getSearch();
 
+         if (savedInstanceState == null)
+         {
+             movieList = getMovies(search);
+         }
         movieList = new ArrayList<>();
         //getMovies(search);
-        movieList = getMovies(search);
+       //
         movieAdapter = new MovieAdapter(this, movieList);
         recyclerView.setAdapter(movieAdapter);
-
-
     }
+
+
 
 
 
     public List<Movie> getMovies(String searchTerm) {
 
+        a = true;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
                 Constants.COMPLETE_URL + searchTerm, null, new Response.Listener<JSONObject>() {
@@ -166,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
             prefs.setSearch(s);
             movieList.clear();
             getMovies(s);
+            c = d = false;
 
 
         }
@@ -194,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
     {
         alertDialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.sortdialog,null);
-        final RadioButton rd1,rd2,rd3,rd4;
+
         rd1=(RadioButton) view.findViewById(R.id.nameSort_Btn);
         rd2=(RadioButton) view.findViewById(R.id.release_sort_btn);
         rd3=(RadioButton) view.findViewById(R.id.popularBtn);
@@ -233,15 +243,20 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
                     });
                     movieAdapter.notifyDataSetChanged();
                     alertDialog.dismiss();
+
                 }
                 else if (rd3.isChecked())
                 {
                     movieList = showPopularMovies();
+                    c = true;
+                    d= a = false;
                     alertDialog.dismiss();
                 }
                 else if (rd4.isChecked())
                 {
                     movieList =showTopRatedMovies();
+                    d = true;
+                    c = a = false;
                     alertDialog.dismiss();
                 }
 
@@ -337,7 +352,6 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
 
 
 
-
                     }
                     movieAdapter.notifyDataSetChanged();// This is very Important
                 } catch (JSONException e) {
@@ -370,8 +384,50 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean("rd1",a);
+        outState.putBoolean("rd3",c);
+        outState.putBoolean("rd4",d);
 
 
 
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+         c = savedInstanceState.getBoolean("rd3");
+         d = savedInstanceState.getBoolean("rd4");
+         a = savedInstanceState.getBoolean("rd1");
+
+        Log.i("TAG1R",String.valueOf(a));
+        Log.i("TAG2R",String.valueOf(c));
+        Log.i("TAG3R",String.valueOf(d));
+
+
+        if(c)
+         {
+             movieList.clear();
+             movieList =showPopularMovies();
+         }
+         if (d)
+         {
+             movieList.clear();
+             movieList= showTopRatedMovies();
+         }
+         if(a)
+         {
+             movieList.clear();
+             movieList = getMovies(search);
+
+         }
+
+
+
+    }
 }
 
