@@ -1,26 +1,22 @@
 package com.application.amrudesh.moviedb_udacity.Activities;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -42,8 +38,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -77,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
 
 
-        Prefs prefs = new Prefs(MainActivity.this);
+         Prefs prefs = new Prefs(MainActivity.this);
          search = prefs.getSearch();
 
          if (savedInstanceState == null)
@@ -98,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
     public List<Movie> getMovies(String searchTerm) {
 
         a = true;
+        c = d = false;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
                 Constants.COMPLETE_URL + searchTerm, null, new Response.Listener<JSONObject>() {
@@ -196,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         }
         else if (id == R.id.fav)
         {
-            setUpViewModel();
+            startActivity(new Intent(this,fav.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -371,18 +366,7 @@ public class MainActivity extends AppCompatActivity implements OnSearchViewListe
         return movieList;
     }
 
-    private void setUpViewModel(){
 
-        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        movieViewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                movieAdapter.setMOvies(movies);
-
-
-            }
-        });
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
